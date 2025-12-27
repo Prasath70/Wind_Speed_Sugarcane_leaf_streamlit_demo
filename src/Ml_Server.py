@@ -7,28 +7,10 @@ import uvicorn
 
 app = FastAPI()
 
-# ------------------------------
-# wind model load (JSON + H5)
-# ------------------------------
-def load_wind_model(model_name: str):
-    with open(f"{model_name}.json", "r") as json_file:
-        model_json = json_file.read()
-    model = model_from_json(model_json)
-    model.load_weights(f"{model_name}.h5")
+def load_model_image(model_path: str):
+    model = load_model(model_path,compile=False)
     return model
 
-
-# ------------------------------
-# image model load (H5)
-# ------------------------------
-def load_image_model(model_path: str):
-    model = load_model(model_path)
-    return model
-
-
-# ------------------------------
-# prediction functions
-# ------------------------------
 def predict_wind_speed(model, features: list[float]):
     x = np.array(features).reshape(1, -1)
     x = x / 2015
@@ -50,8 +32,8 @@ def predict_disease(model, img_file, class_names: list[str]):
 # ------------------------------
 # Load models once at startup
 # ------------------------------
-wind_model = load_wind_model("model/wind_prediction")
-image_model = load_image_model("model/sugarcaneleafprediction.h5")
+wind_model = load_model_image("model/wind_prediction.keras")
+image_model = load_model_image("model/sugarcaneleafprediction.h5")
 class_labels = ["Healthy", "Mosaic", "RedRot", "Rust", "Yellow"]
 
 
